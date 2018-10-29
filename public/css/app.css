@@ -10533,7 +10533,6 @@ body {
 
 .sidebar-nav li {
   text-indent: 20px;
-  line-height: 40px;
 }
 
 .sidebar-nav li a {
@@ -10546,6 +10545,13 @@ body {
   text-decoration: none;
   color: #fff;
   background: rgba(255, 255, 255, 0.2);
+}
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+  min-height: 100px;
+  width: auto;
 }
 
 .sidebar-nav li a:active,

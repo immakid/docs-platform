@@ -27,14 +27,15 @@
             <!-- Sidebar -->
             <div id="sidebar-wrapper">
 
-
-
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
-                        <a href="#">
-                            Start Bootstrap
-                        </a>
+                        <input id="tags-search-input" type="text" class="form-control">
                     </li>
+                </ul>
+
+                <ul class="sidebar-nav mt-5">
+
+
                     <li>
                         <a href="#">Dashboard</a>
                     </li>
@@ -63,29 +64,33 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <div class="container">
-                    <h1>Simple Sidebar</h1>
-                    <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
-                    <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+                <div id="view-article" class="container">
+                    <h1>Title</h1>
 
+                    <div id="editors" class="mt-2">
+                    </div>
 
-                    <a href="#menu-toggle" class="btn btn-secondary" id="add-new-article-btn">+</a>
+                    <a href="#menu-toggle" class="btn btn-secondary mt-3" id="add-editor-btn">Add editor</a>
                 </div>
 
-                <div id="new-article-form" class="container hidden">
 
-                    <input type="text" class="form-control" id="tag" name="tag">
+                <div id="new-article-form" class="container invisible">
+                    <h1>Создать статью</h1>
 
+                    <div class="row">
+                        <input type="text" class="form-control ml-3 col-md-7" id="tag" name="tag">
+                        <a href="#menu-toggle" class="btn btn-primary col-md-2 ml-2" id="save-article-btn">Save</a>
+                    </div>
 
+                    <div id="editors" class="mt-2">
+                    </div>
 
-                    <textarea class="mt-2" name="editor" id="editor-1" cols="30" rows="10"></textarea>
-
-                    <a href="#menu-toggle" class="btn btn-secondary" id="add-editor-btn">Add</a>
-
-
+                    <a href="#menu-toggle" class="btn btn-secondary mt-3" id="add-editor-btn">Add editor</a>
                 </div>
 
+                <a href="#menu-toggle" class="btn btn-secondary" id="add-new-article-btn">+</a>
             </div>
+
             <!-- /#page-content-wrapper -->
 
         </div>
@@ -94,17 +99,109 @@
         <!-- Menu Toggle Script -->
         <script>
 
+            editors = {};
+            editorId = 1;
 
-            $(document).ready(function() {
 
+            function api_get(url, params, callb) {
+                axios.get(url, params)
+                    .then(function (response) {
+                        callb(response);
+                    })
+            }
+
+            function api_post(url, params, callb) {
+                axios.post(url, params)
+                    .then(function (response) {
+                        callb(response);
+                    })
+            }
+
+            function addEditor($box, id) {
+
+                var html = '<div data-id="'+ id +'" class="editor-holder">\n' +
+                    '                <a href="#menu-toggle" class="btn btn-secondary btn-sm" id="del-editor-btn">Del</a>\n' +
+                    '                <textarea class="mt-2" name="editor" id="editor-'+ id+ '" cols="30" rows="10"></textarea>\n' +
+                    '            </div>';
+
+
+                $('#editors', $box).append(html);
+
+                var textArea = $('#editor-'+ id, $box);
+
+                var editor = CodeMirror.fromTextArea(textArea.get(0), {
+                    lineNumbers: true
+                });
+
+                editors[id] = editor;
+            }
+
+
+            function globalPageService()
+            {
 
                 // add article window
                 $("#add-new-article-btn").click(function(e) {
-                    $('#new-article-form').toggleClass('hidden');
+                    $('#new-article-form').toggleClass('invisible');
+                    $('#view-article').toggleClass('hidden');
                 });
 
-            });
+            }
 
+            function tagsListService()
+            {
+                $('#tags-search-input').keyup(function() {
+
+                });
+            }
+
+
+            function createNewArticleService()
+            {
+                var $box = $('#new-article-form');
+
+                addEditor($box, editorId++);
+
+
+
+                $('#save-article-btn', $box).click(function() {
+
+                });
+
+
+                $('#add-editor-btn', $box).click(function() {
+                    addEditor($box, editorId++);
+                });
+            }
+
+
+            function viewArticleService()
+            {
+                var $box = $('#view-article');
+                addEditor($box, editorId++);
+
+
+                $('#add-editor-btn', $box).click(function() {
+                    debugger;
+                    addEditor($box, editorId++);
+                });
+
+            }
+
+
+            $(document).ready(function() {
+
+                // api();
+
+                createNewArticleService();
+
+                viewArticleService();
+
+                tagsListService();
+
+                globalPageService();
+
+            });
 
         </script>
     </body>
