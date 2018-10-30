@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Docs platform</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
@@ -64,8 +64,15 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
 
+
                 <div id="view-article" class="container">
-                    <h1>Title</h1>
+
+                    <h1 class="">Title</h1>
+
+                    <div class="row">
+                        <a href="#menu-toggle" class="btn btn-secondary col-md-1 delete-article-btn mb-1 ml-3" id="">Delete</a>
+                        <a href="#menu-toggle" class="btn btn-primary col-md-1 update-article-btn mb-1 ml-1" id="">Update</a>
+                    </div>
 
                     <div id="editors" class="mt-2">
                     </div>
@@ -80,6 +87,7 @@
                     <div class="row">
                         <input type="text" class="form-control ml-3 col-md-7" id="tag" name="tag">
                         <a href="#menu-toggle" class="btn btn-primary col-md-2 ml-2" id="save-article-btn">Save</a>
+                        <a href="#menu-toggle" class="btn btn-dark col-md-2 ml-2" id="reset-article-btn">Reset</a>
                     </div>
 
                     <div id="editors" class="mt-2">
@@ -110,17 +118,44 @@
                     })
             }
 
-            function api_post(url, params, callb) {
-                axios.post(url, params)
+            function api_delete(url, params, callb, callb_error) {
+                axios.delete('/api'+url, params)
                     .then(function (response) {
                         callb(response);
                     })
+                    .catch(error => {
+                        console.log(error.response);
+                        callb_error && callb_error(error);
+                    });
+            }
+
+            function api_post(url, params, callb, callb_error) {
+                axios.post('/api'+url, params)
+                    .then(function (response) {
+                        callb(response);
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        callb_error && callb_error(error);
+                    });
+            }
+
+            function resetNewArticleWindow() {
+
+                var $box = $('#new-article-form');
+
+                $('#tag', $box).val('');
+                $('#editors', $box).html('');
+                editors = {};
+
+                addEditor($box, editorId++);
+
             }
 
             function addEditor($box, id) {
 
-                var html = '<div data-id="'+ id +'" class="editor-holder">\n' +
-                    '                <a href="#menu-toggle" class="btn btn-secondary btn-sm" id="del-editor-btn">Del</a>\n' +
+                var html = '<div id="editor-holder-'+id+'" data-id="'+ id +'" class="editor-holder mt-2">\n' +
+                    '                <a href="#menu-toggle" class="btn btn-secondary btn-sm del-editor-btn mb-1" id="">Del</a>\n' +
                     '                <textarea class="mt-2" name="editor" id="editor-'+ id+ '" cols="30" rows="10"></textarea>\n' +
                     '            </div>';
 
@@ -134,6 +169,19 @@
                 });
 
                 editors[id] = editor;
+
+                var $holder = '#editor-holder-'+ id;
+
+
+                $('.del-editor-btn', $holder).click(function() {
+
+                    if(confirm('Delete this editor?')) {
+                        var eh = $(this).parents('.editor-holder');
+                        eh.remove();
+                    }
+
+                });
+
             }
 
 
@@ -163,14 +211,65 @@
                 addEditor($box, editorId++);
 
 
+                $('#reset-article-btn', $box).click(function() {
+                    resetNewArticleWindow();
+                });
+
 
                 $('#save-article-btn', $box).click(function() {
+
+                    var $box = $('#new-article-form');
+                    var content = [];
+                    var tag = $('#tag', $box).val();
+
+
+                    $('.editor-holder', $box).each(function(i, item) {
+
+                        var editorId = $(item).data('id');
+
+                        var value = editors[editorId].getValue();
+
+                        if (value.length)
+                        {
+                            content.push({
+                                value: value
+                            });
+                        }
+                    });
+
+
+                    if (content.length) {
+
+                        api_post('/articles', {
+                            content:    content,
+                            tag:        tag
+                        }, function(resp) {
+
+                            resetNewArticleWindow();
+
+
+                        }, function(error) {
+
+
+
+                            error.request.response
+
+                        });
+                    }
+
 
                 });
 
 
                 $('#add-editor-btn', $box).click(function() {
-                    addEditor($box, editorId++);
+
+                    var id = $('#view-article').attr('data-id');
+
+
+                    api_delete('/article/'+ id, {}, function() {
+                        debugger;
+                    });
+
                 });
             }
 
@@ -182,10 +281,14 @@
 
 
                 $('#add-editor-btn', $box).click(function() {
-                    debugger;
                     addEditor($box, editorId++);
                 });
 
+                $('#delete-article-btn', $box).click(function() {
+                    if(confirm('Delete article?')) {
+
+                    }
+                });
             }
 
 

@@ -126,6 +126,7 @@ body {
   position: fixed;
   right: 30px;
   bottom: 60px;
+  z-index: 10;
 }
 
 @media(min-width:768px) {
@@ -154,9 +155,9 @@ body {
 
 .CodeMirror {
   border: 1px solid #eee;
-  height: auto;
-  min-height: 100px;
-  width: auto;
+  height: 100%;
+  //min-height: 100px;
+  //width: auto;
 }
 
 .editor-holder
