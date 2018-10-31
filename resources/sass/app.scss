@@ -91,6 +91,11 @@ body {
   color: black;
 }
 
+.sidebar-nav li a.active
+{
+  background-color: #aaa;
+}
+
 .sidebar-nav li a:hover {
   text-decoration: none;
   //color: #fff;

@@ -48,7 +48,10 @@
 
         var $box = $('#new-article-form');
 
-        $('#tag', $box).val('');
+        $('#group', $box).val('');
+        $('#sub_group', $box).val('');
+        $('#title', $box).val('');
+
         $('#editors', $box).html('');
         editors = {};
 
@@ -104,7 +107,7 @@
     
     function loadMainTagsList()
     {
-        api_get('/tags', {}, function(r) {
+        api_get('/groups', {}, function(r) {
 
             $('#tags-list').html(r.data.html);
             tagsListBindings();
@@ -177,14 +180,28 @@
         loadMainTagsList();
     }
 
-    function tagsListBindings()
-    {
+    function tagsListBindings() {
+
+        function showSubgroups(id)
+        {
+            api_get('/groups/subgroups/'+ id, {}, function(r) {
+
+                $('#tags-list').html(r.data.html);
+                tagsListBindings();
+
+            });
+        }
 
         function showArticle(id)
         {
             api_get('/articles/'+ id, {}, function(r) {
 
                 var $box = $('#view-article');
+
+                $('#group', $box).text(r.data.group_name);
+                $('#sub_group', $box).text(r.data.sub_group_name);
+                $('#title', $box).text(r.data.title);
+
 
                 $('#editors', $box).html('');
 
@@ -201,7 +218,9 @@
         function showArticleRoute($item, id)
         {
             var $box = $('#new-article-form');
-            $('#tag', $box).val($item.text());
+
+            $('#group', $box).val($item.attr('data-group'));
+            $('#sub_group', $box).val($item.attr('data-subgroup'));
 
 
         }
@@ -209,7 +228,11 @@
 
         $('#tags-list a').click(function() {
 
-            var id = $(this).attr('data-id');
+            $('#tags-list .active').removeClass('active');
+
+
+            var $link = $(this);
+            var id = $link.attr('data-id');
 
             if($('#app').hasClass('opened-new-article')) {
 
@@ -217,8 +240,17 @@
 
                 return;
             }
+            //=-=-=-=-=-=-=-=-=-=
 
-            showArticle(id);
+            if ($link.hasClass('article')) {
+                showArticle(id);
+            }
+
+            if ($link.hasClass('main')) {
+                $link.addClass('active');
+                showSubgroups(id);
+            }
+
         });
 
     }
@@ -261,14 +293,19 @@
             var $box = $('#new-article-form');
             var content = getBoxEditorsContent($box);
 
-            var tag = $('#tag', $box).val();
+            var group = $('#group', $box).val();
+            var subGroup = $('#sub_group', $box).val();
+            var title = $('#title', $box).val();
 
 
             if (content.length) {
 
                 api_post('/articles', {
                     content:    content,
-                    tag:        tag
+                    title:      title,
+                    group:      group,
+                    sub_group:  subGroup,
+
                 }, function(resp) {
 
                     resetNewArticleWindow();

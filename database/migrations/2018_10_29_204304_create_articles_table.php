@@ -17,7 +17,10 @@ class CreateArticlesTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->string('tag');
+            $table->integer('group_id');
+            $table->integer('sub_group_id');
+            $table->string('title');
+
             $table->string('content',  20000);
         });
     }

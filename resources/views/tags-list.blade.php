@@ -1,8 +1,8 @@
 
-@foreach ($tags as $tag)
+@foreach ($groups as $group)
 
     <li class="">
-        <a href="#" data-id="{{$tag->id}}">{{$tag->tag}}</a>
+        <a href="#" class="{{($group->is_main ? 'main' : '')}}" data-id="{{$group->id}}">{{$group->name}}</a>
     </li>
 
 @endforeach

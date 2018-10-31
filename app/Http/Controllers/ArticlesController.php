@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -19,6 +20,22 @@ class ArticlesController extends Controller
 
     }
 
+    public function createOrGetGroup($name, $is_main=null)
+    {
+        $group = Group::where([
+            'name' => $name,
+            'is_main' => $is_main
+        ])->first();
+
+        if(!$group) {
+            $group = Group::firstOrCreate([
+                'name' => $name,
+                'is_main' => $is_main
+            ]);
+        }
+
+        return $group;
+    }
 
 
     /**
@@ -31,16 +48,23 @@ class ArticlesController extends Controller
     {
 
         $validatedData = $request->validate([
-            'tag' => 'required|unique:articles|max:255',
+            'title' => 'required|max:255',
+            'group' => 'required|max:255',
+            'sub_group' => 'required|max:255',
             'content' => 'required',
         ]);
 
+        $group = $this->createOrGetGroup($validatedData['group'], 1);
+        $subGroup = $this->createOrGetGroup($validatedData['sub_group']);
+
 
         $article = new Article();
-        $article->tag = $validatedData['tag'];
+        $article->title = $validatedData['title'];
+        $article->group_id = $group->id;
+        $article->sub_group_id = $subGroup->id;
         $article->content = json_encode($validatedData['content']);
-
         $article->save();
+
 
         return response()->json([
             'article' => $article
@@ -55,7 +79,15 @@ class ArticlesController extends Controller
      */
     public function show(Article $article)
     {
-        //
+
+        $groups = Group::whereIn('id', [
+            $article->group_id,
+            $article->sub_group_id])->get();
+
+        $article->group_name = $groups[0]->name;
+        $article->sub_group_name = $groups[1]->name;
+
+
         $article->content = json_decode($article->content, 1);
 
         return $article;

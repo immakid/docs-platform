@@ -20,5 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('articles', 'ArticlesController');
 
-Route::get('tags', 'TagsController@index');
-Route::get('tags/find', 'TagsController@find');
+Route::get('groups', 'GroupsController@index');
+Route::get('groups/subgroups/{groupId}', 'GroupsController@subgroups');
+Route::get('groups/find', 'GroupsController@find');

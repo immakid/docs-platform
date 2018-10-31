@@ -48,9 +48,9 @@
                 <div id="view-article" class="container invisible">
 
                     <h1 class="">
-                        <span>Group</span>
-                        <span>SubGroup</span>
-                        <span>Title</span>
+                        <span id="group">Group</span>
+                        <span id="sub_group" class="ml-2">SubGroup</span>
+                        <b><span id="title" class="ml-2">Title</span></b>
                     </h1>
 
 
@@ -70,8 +70,8 @@
                     <h1>Создать статью</h1>
 
                     <div class="row">
-                        <input type="text" class="form-control ml-3 col-md-3" id="tag" name="tag">
-                        <input type="text" class="form-control ml-1 col-md-3" id="subgroup" name="subgroup">
+                        <input type="text" class="form-control ml-3 col-md-3" id="group" name="tag">
+                        <input type="text" class="form-control ml-1 col-md-3" id="sub_group" name="subgroup">
                         <input type="text" class="form-control ml-1 col-md-3" id="title" name="title">
 
                         <a href="#menu-toggle" class="btn btn-primary col-md-1 ml-2" id="save-article-btn">Save</a>
