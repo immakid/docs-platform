@@ -56,6 +56,7 @@ class ArticlesController extends Controller
     public function show(Article $article)
     {
         //
+        $article->content = json_decode($article->content, 1);
 
         return $article;
     }
@@ -91,7 +92,6 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
-
         $article->delete();
 
         return response()->json([], 204);

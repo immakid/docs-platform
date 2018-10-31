@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TagsController extends Controller
 {
@@ -11,61 +13,36 @@ class TagsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private function tagsQuery($needle=null)
+    {
+        $q = DB::table('articles')->select('id', 'tag');
+
+        if($needle) {
+            $q->where('tag', 'LIKE', $needle.'%');
+        } else {
+            $q->where('tag', 'NOT LIKE', '%.%');
+        }
+
+        return $q->orderBy('tag')->get();
+    }
+
     public function index()
     {
+        $tags = $this->tagsQuery();
 
+        return response()->json([
+            'html' => view('tags-list', ['tags' => $tags])->render()
+        ]);
     }
 
 
+    /**
+     * @param Request $request
+     */
     public function find(Request $request)
     {
+        $tags = $this->tagsQuery($request->get('needle'));
 
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('tags-list', ['tags' => $tags]);
     }
 }

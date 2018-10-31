@@ -10538,20 +10538,12 @@ body {
 .sidebar-nav li a {
   display: block;
   text-decoration: none;
-  color: #999999;
+  color: black;
 }
 
 .sidebar-nav li a:hover {
   text-decoration: none;
-  color: #fff;
   background: rgba(255, 255, 255, 0.2);
-}
-
-.CodeMirror {
-  border: 1px solid #eee;
-  height: auto;
-  min-height: 100px;
-  width: auto;
 }
 
 .sidebar-nav li a:active,
@@ -10582,6 +10574,7 @@ body {
   position: fixed;
   right: 30px;
   bottom: 60px;
+  z-index: 10;
 }
 
 @media (min-width: 768px) {
@@ -10610,5 +10603,19 @@ body {
     position: relative;
     margin-right: 0;
   }
+}
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+  min-height: 60px;
+}
+
+.CodeMirror .CodeMirror-scroll {
+  min-height: 60px;
+}
+
+.editor-holder {
+  margin-top: 20px;
 }
 
