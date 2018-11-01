@@ -2,7 +2,7 @@
 
     editors = {};
     editorId = 1;
-
+    showedParentGroupId = 0;
 
     function api_get(url, params, callb) {
         axios.get('/api'+ url, params)
@@ -96,7 +96,7 @@
 
         });
 
-        editor.on('change', function() {
+        editor.on('inputRead', function() {
             $box.addClass('editor-changed');
         });
 
@@ -108,13 +108,52 @@
         $('#tags-search-input')
             .val('')
             .focus();
-        
-        
-        
     }
-    
+
+    function showSubgroups(id)
+    {
+        showedParentGroupId = id;
+
+        api_get('/groups/subgroups/'+ id, {}, function(r) {
+
+            $('#tags-list').html(r.data.html);
+            tagsListBindings();
+
+        });
+    }
+
+    function showArticle(id)
+    {
+        api_get('/articles/'+ id, {}, function(r) {
+
+            var $box = $('#view-article');
+
+            // set title
+            $('#group', $box).text(r.data.group_name);
+            $('#sub_group', $box).text(r.data.sub_group_name);
+            $('#title', $box).text(r.data.title);
+
+            // set block attr
+            $box.attr('data-id', r.data.id);
+            $box
+                .removeClass('invisible')
+                .removeClass('editor-changed');
+
+
+            // install editors
+            $('#editors', $box).html('');
+            r.data.content.map(function(item) {
+                var editor = addEditor($box, editorId++, {});
+                editor.setValue(item.value);
+            });
+
+        });
+    }
+
     function loadMainTagsList()
     {
+        showedParentGroupId = 0;
+
         api_get('/groups', {}, function(r) {
 
             $('#tags-list').html(r.data.html);
@@ -133,16 +172,16 @@
         });
     }
 
+    function toggleNewArticleForm()
+    {
+        $('#new-article-form').toggleClass('invisible');
+        $('#view-article').toggleClass('hidden');
+        $('#app').toggleClass('opened-new-article');
+    }
+
 
     function globalPageService()
     {
-        function toggleNewArticleForm()
-        {
-            $('#new-article-form').toggleClass('invisible');
-            $('#view-article').toggleClass('hidden');
-            $('#app').toggleClass('opened-new-article');
-        }
-
         // add article window
         $("#add-new-article-btn").click(function(e) {
             toggleNewArticleForm();
@@ -189,47 +228,6 @@
     }
 
     function tagsListBindings() {
-
-        function showSubgroups(id)
-        {
-            api_get('/groups/subgroups/'+ id, {}, function(r) {
-
-                $('#tags-list').html(r.data.html);
-                tagsListBindings();
-
-            });
-        }
-
-        function showArticle(id)
-        {
-            api_get('/articles/'+ id, {}, function(r) {
-
-                var $box = $('#view-article');
-
-                // set title
-                $('#group', $box).text(r.data.group_name);
-                $('#sub_group', $box).text(r.data.sub_group_name);
-                $('#title', $box).text(r.data.title);
-
-                // install editors
-                $('#editors', $box).html('');
-
-                r.data.content.map(function(item) {
-
-                    var editor = addEditor($box, editorId++, {});
-
-                    editor.setValue(item.value);
-
-                });
-
-                // set block attr
-                $box.attr('data-id', r.data.id);
-                $box
-                    .removeClass('invisible')
-                    .removeClass('editor-changed');
-
-            });
-        }
 
         function showArticleRoute($item, id)
         {
@@ -349,11 +347,13 @@
 
                 resetNewArticleWindow();
 
+                showSubgroups(showedParentGroupId);
+                showArticle(resp.data.article.id);
+
+                toggleNewArticleForm();
 
             }, function(error) {
 
-
-                error.request.response
 
             });
 
@@ -414,6 +414,7 @@
                     var $box = $('#view-article');
                     $box.addClass('invisible');
 
+                    showSubgroups(showedParentGroupId);
                 });
             }
         });
