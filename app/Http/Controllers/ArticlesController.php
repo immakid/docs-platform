@@ -104,7 +104,7 @@ class ArticlesController extends Controller
     public function update(Request $request, Article $article)
     {
         $validatedData = $request->validate([
-            'tag' => 'required|unique:articles|max:255',
+            'title' => 'required|max:255',
             'content' => 'required',
         ]);
 

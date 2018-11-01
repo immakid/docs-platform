@@ -42,21 +42,19 @@
             <!-- /#sidebar-wrapper -->
 
             <!-- Page Content -->
-            <div id="page-content-wrapper">
-
+            <div id="page-content-wrapper" class="nopadding">
 
                 <div id="view-article" class="container invisible">
 
                     <h1 class="">
-                        <span id="group">Group</span>
-                        <span id="sub_group" class="ml-2">SubGroup</span>
-                        <b><span id="title" class="ml-2">Title</span></b>
+                        <span id="group" contenteditable="true">Group</span>
+                        <span id="sub_group" class="ml-2" contenteditable="true">SubGroup</span>
+                        <b><span id="title" class="ml-2" contenteditable="true">Title</span></b>
                     </h1>
 
-
                     <div class="row">
-                        <a href="#menu-toggle" class="btn btn-sm btn-secondary col-md-1 delete-article-btn mb-1 ml-3" id="">Delete</a>
-                        <a href="#menu-toggle" class="btn btn-sm btn-primary col-md-1 update-article-btn mb-1 ml-1" id="">Update</a>
+                        <a href="#menu-toggle" class="btn btn-sm btn-secondary delete-article-btn mb-1 ml-3" id="">Delete</a>
+                        <a href="#menu-toggle" class="btn btn-sm btn-primary update-article-btn mb-1 ml-1" id="">Update</a>
                     </div>
 
                     <div id="editors" class="mt-2">

@@ -147,17 +147,18 @@ body {
   #wrapper.toggled #sidebar-wrapper {
     width: 250px;
   }
+
   #page-content-wrapper {
     padding: 20px;
     position: relative;
+
   }
+
   #wrapper.toggled #page-content-wrapper {
     position: relative;
     margin-right: 0;
   }
 }
-
-
 
 .CodeMirror {
   $height: 60px;
@@ -175,4 +176,30 @@ body {
 .editor-holder
 {
   margin-top: 20px;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#view-article
+{
+  border-left: 3px solid white;
+
+  &.editor-changed
+  {
+    border-left: 3px solid green;
+  }
+}
+
+.back-link
+{
+  color: black;
+  font-weight: bold;
+
+  &:hover{
+    color: black;
+  }
+
 }

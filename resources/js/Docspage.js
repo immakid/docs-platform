@@ -47,6 +47,7 @@
     function resetNewArticleWindow() {
 
         var $box = $('#new-article-form');
+        $box.removeClass('editor-changed');
 
         $('#group', $box).val('');
         $('#sub_group', $box).val('');
@@ -61,7 +62,8 @@
 
 
 
-    function addEditor($box, id) {
+    function addEditor($box, id, params) {
+        !params && (params={});
 
         var html = '<div id="editor-holder-'+id+'" data-id="'+ id +'" class="editor-holder mt-2">\n' +
             '                <a href="#menu-toggle" class="btn btn-secondary btn-sm del-editor-btn mb-1" id="">Del</a>\n' +
@@ -73,10 +75,12 @@
 
         var textArea = $('#editor-'+ id, $box);
 
-        var editor = CodeMirror.fromTextArea(textArea.get(0), {
+        var final = $.extend(params, {
             lineNumbers: true,
-            viewportMargin: Infinity
+            viewportMargin: Infinity,
         });
+
+        var editor = CodeMirror.fromTextArea(textArea.get(0), final);
 
         editors[id] = editor;
 
@@ -90,6 +94,10 @@
                 eh.remove();
             }
 
+        });
+
+        editor.on('change', function() {
+            $box.addClass('editor-changed');
         });
 
         return editor;
@@ -198,20 +206,28 @@
 
                 var $box = $('#view-article');
 
+                // set title
                 $('#group', $box).text(r.data.group_name);
                 $('#sub_group', $box).text(r.data.sub_group_name);
                 $('#title', $box).text(r.data.title);
 
-
+                // install editors
                 $('#editors', $box).html('');
 
                 r.data.content.map(function(item) {
-                    var editor = addEditor($box, editorId++);
-                    editor.setValue(item.value)
+
+                    var editor = addEditor($box, editorId++, {});
+
+                    editor.setValue(item.value);
+
                 });
 
+                // set block attr
                 $box.attr('data-id', r.data.id);
-                $box.removeClass('invisible');
+                $box
+                    .removeClass('invisible')
+                    .removeClass('editor-changed');
+
             });
         }
 
@@ -221,12 +237,19 @@
 
             $('#group', $box).val($item.attr('data-group'));
             $('#sub_group', $box).val($item.attr('data-subgroup'));
-
-
         }
 
 
-        $('#tags-list a').click(function() {
+        var $box = $('#tags-list');
+
+        $('.main', $box).click(function() {
+            var $link = $(this);
+            var id = $link.attr('data-id');
+
+            showSubgroups(id);
+        });
+
+        $('.article', $box).click(function() {
 
             $('#tags-list .active').removeClass('active');
 
@@ -242,16 +265,29 @@
             }
             //=-=-=-=-=-=-=-=-=-=
 
-            if ($link.hasClass('article')) {
+            var $box = $('#view-article');
+            if ($box.hasClass('editor-changed')) {
+
+                if (confirm('Last article has changes, continue?')) {
+                    $link.addClass('active');
+                    showArticle(id);
+                }
+
+            } else {
+                $link.addClass('active');
                 showArticle(id);
             }
-
-            if ($link.hasClass('main')) {
-                $link.addClass('active');
-                showSubgroups(id);
-            }
-
         });
+
+
+        $('.back-link').click(function() {
+
+            loadMainTagsList();
+
+            var $box = $('#view-article');
+            $box.addClass('invisible');
+        });
+
 
     }
 
@@ -291,34 +327,35 @@
         $('#save-article-btn', $box).click(function() {
 
             var $box = $('#new-article-form');
+
             var content = getBoxEditorsContent($box);
+            if (!content.length) return;
+            //=-=-=-=-=-=-=-=-=-=
 
             var group = $('#group', $box).val();
             var subGroup = $('#sub_group', $box).val();
             var title = $('#title', $box).val();
+            if (!title.length || !group.length || !subGroup.length) return;
+            //=-=-=-=-=-=-=-=-=-=
 
 
-            if (content.length) {
+            api_post('/articles', {
+                content:    content,
+                title:      title,
+                group:      group,
+                sub_group:  subGroup,
 
-                api_post('/articles', {
-                    content:    content,
-                    title:      title,
-                    group:      group,
-                    sub_group:  subGroup,
+            }, function(resp) {
 
-                }, function(resp) {
-
-                    resetNewArticleWindow();
+                resetNewArticleWindow();
 
 
-                }, function(error) {
+            }, function(error) {
 
 
+                error.request.response
 
-                    error.request.response
-
-                });
-            }
+            });
 
         });
 
@@ -342,9 +379,15 @@
 
 
         $('.update-article-btn', $box).click(function() {
-            var id = $('#view-article').attr('data-id');
 
             var $box = $('#view-article');
+            var id = $box.attr('data-id');
+
+            var group = $('#group', $box).text();
+            var subGroup = $('#sub_group', $box).text();
+            var title = $('#title', $box).text();
+            if (!title.length || !group.length || !subGroup.length) return;
+            //=-=-=-=-=-=-=-=-=-=
 
             var content = getBoxEditorsContent($box);
             if(!content.length) return;
@@ -352,11 +395,13 @@
 
             api_put('/articles/'+id, {
                 content: content,
-                tag: 'tag_test'
-            }, function(r) {
-                debugger;
-            });
+                title: title,
 
+            }, function(r) {
+
+                $box.removeClass('editor-changed');
+
+            });
         });
 
         // delete article
@@ -368,10 +413,6 @@
 
                     var $box = $('#view-article');
                     $box.addClass('invisible');
-
-
-                    id;
-
 
                 });
             }

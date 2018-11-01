@@ -10623,3 +10623,25 @@ body {
   margin-top: 20px;
 }
 
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#view-article {
+  border-left: 3px solid white;
+}
+
+#view-article.editor-changed {
+  border-left: 3px solid green;
+}
+
+.back-link {
+  color: black;
+  font-weight: bold;
+}
+
+.back-link:hover {
+  color: black;
+}
+

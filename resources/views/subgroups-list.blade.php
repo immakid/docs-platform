@@ -1,4 +1,9 @@
 
+<h4>
+    <a class="back-link" href="javascript:void(0)"><b>{{$parentGroup->name}}</b></a>
+</h4>
+
+
 @foreach ($groups as $group)
 
     <li class="">
