@@ -33,10 +33,13 @@
                     <li class="sidebar-brand">
                         <input id="tags-search-input" type="text" class="form-control">
                     </li>
+
+                    {{--<li>--}}
+                        {{--<a href="#">history</a>--}}
+                    {{--</li>--}}
                 </ul>
 
-                <ul id="tags-list" class="sidebar-nav mt-5">
-                </ul>
+                <ul id="tags-list" class="sidebar-nav mt-5"></ul>
 
             </div>
             <!-- /#sidebar-wrapper -->
