@@ -108,10 +108,9 @@ class ArticlesController extends Controller
             'content' => 'required',
         ]);
 
-
+        $article->title = $validatedData['title'];
         $article->content = json_encode($validatedData['content']);
         $article->save();
-
 
         return response()->json([]);
     }

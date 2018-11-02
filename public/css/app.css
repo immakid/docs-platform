@@ -10480,6 +10480,7 @@ a.text-dark:focus {
 
 body {
   overflow-x: hidden;
+  font-size: 1em;
 }
 
 #wrapper {
@@ -10500,7 +10501,7 @@ body {
   height: 100%;
   margin-left: -250px;
   overflow-y: auto;
-  background: #cccccc;
+  background: #eee;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
 }
@@ -10542,12 +10543,12 @@ body {
 }
 
 .sidebar-nav li a.active {
-  background-color: #aaa;
+  background-color: #bbb;
 }
 
 .sidebar-nav li a:hover {
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.2);
+  background-color: #aaa;
 }
 
 .sidebar-nav li a:active,

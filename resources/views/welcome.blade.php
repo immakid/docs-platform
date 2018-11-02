@@ -47,7 +47,7 @@
             <!-- Page Content -->
             <div id="page-content-wrapper" class="nopadding">
 
-                <div id="view-article" class="container invisible">
+                <div id="view-article" class="container invisible mt-1">
 
                     <h1 class="">
                         <span id="group" contenteditable="true">Group</span>

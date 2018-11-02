@@ -14,11 +14,10 @@
     <ul class="articles">
     @foreach ($group['articles'] as $article)
         <li>
-            <a href="#" class="article" data-group="{{$parentGroup->name}}" data-subgroup="{{$group['name']}}" data-id="{{$article->id}}">{{$article->title}}</a>
+            <b><a href="#" class="article" data-group="{{$parentGroup->name}}" data-subgroup="{{$group['name']}}" data-id="{{$article->id}}">{{$article->title}}</a></b>
         </li>
     @endforeach
     </ul>
-
 
 @endforeach
 
