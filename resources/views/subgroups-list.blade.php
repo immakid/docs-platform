@@ -1,8 +1,9 @@
 
+<li class="">
 <h4>
-    <a class="back-link" href="javascript:void(0)"><b>{{$parentGroup->name}}</b></a>
+    <a class="back-link" href="javascript:void(0)"><b><- {{$parentGroup->name}}</b></a>
 </h4>
-
+</li>
 
 @foreach ($groups as $group)
 

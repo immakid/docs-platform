@@ -264,7 +264,10 @@
             //=-=-=-=-=-=-=-=-=-=
 
             var $box = $('#view-article');
-            if ($box.hasClass('editor-changed')) {
+
+            if (!$box.hasClass('invisible')
+                && !$box.hasClass('hidden')
+                && $box.hasClass('editor-changed')) {
 
                 if (confirm('Last article has changes, continue?')) {
                     $link.addClass('active');
