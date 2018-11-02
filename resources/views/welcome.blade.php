@@ -86,6 +86,7 @@
                 </div>
 
                 <a href="#menu-toggle" class="btn btn-secondary" id="add-new-article-btn">+</a>
+                <a href="#menu-toggle" class="btn btn-secondary" id="up-btn">Up</a>
             </div>
 
             <!-- /#page-content-wrapper -->

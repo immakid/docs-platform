@@ -187,6 +187,12 @@
             toggleNewArticleForm();
         });
 
+        $("#up-btn").click(function(e) {
+            var body = $("html, body");
+            body.stop().animate({scrollTop:0}, 100, 'swing', function() {
+            });
+        });
+
 
         $(window).keyup(function(e) {
 
