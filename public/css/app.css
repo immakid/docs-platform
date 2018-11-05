@@ -10653,3 +10653,7 @@ body {
   color: black;
 }
 
+#new-article-form {
+  margin-bottom: 100px;
+}
+
